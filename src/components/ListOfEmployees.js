@@ -116,7 +116,7 @@ function ListOfEmployees() {
                     <TableCell>
                       <Link
                         m={10}
-                        to={"/employees/update"}
+                        to={`/employees/update/${i}`}
                         state={{ row: row ,index:i}}
                       >
                         <Tooltip title="Edit" placement="left-start">

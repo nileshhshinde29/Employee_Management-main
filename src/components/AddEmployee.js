@@ -6,6 +6,12 @@ import { Autocomplete, Button, Card, CardContent, Checkbox, Container, FormContr
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import AdapterDateFns from "@mui/lab/AdapterDateFns"
+import { LocalizationProvider , DatePicker} from '@mui/lab'
 
 function AddEmployee() {
 
@@ -85,13 +91,14 @@ function AddEmployee() {
     
   // }
 
-const myObj = AllEmployeData; // data is our object of values that we want to validate
+  const myObj = AllEmployeData  // data is our object of values that we want to validate
 const [formValues, setFormValues] = React.useState(myObj);
 const [formErrors, setformErrors] = useState({});
 const [isSubmit, setIsSubmit] = useState(false);
 
 useEffect(() => {
   setFormValues(myObj);
+  // console.log(myObj)
 }, [AllEmployeData]);
 
 useEffect(() => {
@@ -102,8 +109,8 @@ useEffect(() => {
        : [];
      arr.push(AllEmployeData);
      localStorage.setItem("empList", JSON.stringify(arr));
-     // console.log(e)
-     navigate("/");
+    //  setIsSubmit(false); 
+    navigate("/");
   }
 }, [formErrors]);
 
@@ -117,27 +124,50 @@ const AddQuestionIntoArray = (e, data) => {
 
 const validate = (values) => {
   const errors = {};
-  console.log(values)
+
+
 
   if (!values.name) {
     errors.name = "question text is require";
   }
-  if (!values.password) {
-    errors.password = "password is require";
+
+  if (!values.mobile) {
+    errors.mobile = "Mobile no required";
   }
-  if (!values.mobile.length )
-  {
-    errors.mobile="Mobile no required"
+  if (values.mobile.length > 10) {
+    errors.mobile = "Mobile no must be less than 11 ";
   }
-  if (!values.state ) {
-    errors.state = "State is required";
+  if (values.mobile < 0) {
+    errors.mobile = "Mobile no must be greater than 0 ";
   }
-   if (!values.city) {
-     errors.city = 'city no required';
+  if (!values.email.includes("@gmail.com")) {
+    errors.email = "Please enter valid email";
   }
-   if (!values.email.includes('@gmail.com')) {
-     errors.email = "email must be content @gmail.com ";
-  }
+  // if (!values.name) {
+  //   errors.name = "question text is require";
+  // }
+  // if (!values.password) {
+  //   errors.password = "password is require";
+  // }
+  // if (!values.mobile )
+  // {
+  //   errors.mobile="Mobile no required"
+  // }
+  // if (values.mobile.length > 10) {
+  //   errors.mobile = "Mobile no must be less than 11 ";
+  // }
+  // if (!values.DOB) {
+  //   errors.DOB = "date is required";
+  // }
+  // if (!values.state ) {
+  //   errors.state = "State is required";
+  // }
+  //  if (!values.city) {
+  //    errors.city = 'city no required';
+  // }
+  //  if (!values.email.includes('@gmail.com')) {
+  //    errors.email = "please Enter valid Email";
+  // }
   
 
 
@@ -147,13 +177,12 @@ const validate = (values) => {
   return errors;
   };
   
-  console.log(formErrors)
 
   return (
-    <Box border={1}>
-      <Card sx={{ minWidth: 1200, maxWidth: 700, margin: "0 auto" }}>
+    <Box border={1} margin={'0px 230px  ' }>
+      <Card sx={{ minWidth: 800, maxWidth: 700, margin: "0 auto" }}>
         <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-          Add AllEmployeData Details
+          Add Employee
         </Typography>
 
         <CardContent>
@@ -161,7 +190,7 @@ const validate = (values) => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={12}>
                 <TextField
-                  error={false}
+                  error={formErrors.name}
                   type="text"
                   id="outlined-error"
                   label="Name"
@@ -176,7 +205,7 @@ const validate = (values) => {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
-                  error={false}
+                  error={formErrors.email}
                   type="email"
                   id="outlined-error"
                   label="Email"
@@ -191,7 +220,7 @@ const validate = (values) => {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
-                  error={false}
+                  error={formErrors.mobile}
                   type="number"
                   id="outlined-error"
                   label="Mobile"
@@ -260,7 +289,7 @@ const validate = (values) => {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <TextField
+                {/* <TextField
                   id="date"
                   label="Date of Birth"
                   type="date"
@@ -273,7 +302,24 @@ const validate = (values) => {
                     setEmployee({ ...AllEmployeData, DOB: e.target.value })
                   }
                   fullWidth
-                />
+                /> */}
+
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    disableFuture
+                    label="Date Of Birth"
+                    openTo="year"
+                    views={["year", "month", "day"]}
+                    value={AllEmployeData.DOB}
+                    onChange={(newValue) => {
+                      // console.log(newValue.getDate()+'/'+newValue.getMonth()+'/'+newValue.getFullYear());
+                      setEmployee({ ...AllEmployeData, DOB: newValue });
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                    helperText={formErrors.date}
+                  />
+                  <p> {formErrors.DOB}</p>
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <FormControl>

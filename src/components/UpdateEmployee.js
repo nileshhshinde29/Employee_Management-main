@@ -3,6 +3,8 @@ import TextField from '@mui/material/TextField';
 import { Autocomplete, Button, Card, CardContent, Checkbox,Box, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Grid, Radio, RadioGroup, Slider, Stack, TextareaAutosize, Typography } from '@mui/material';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { LocalizationProvider, DatePicker } from "@mui/lab";
 
 
 function UpdateEmployee(props) {
@@ -91,6 +93,7 @@ const [states, setStates] = useState([]);
         i === location.state.index ? AllEmployeData : emp
       );
       localStorage.setItem("empList", JSON.stringify(arr));
+       setIsSubmit(false);
       navigate("/");
     }
   }, [formErrors]);
@@ -105,39 +108,43 @@ const [states, setStates] = useState([]);
 
   const validate = (values) => {
     const errors = {};
-    console.log(values);
 
     if (!values.name) {
       errors.name = "question text is require";
     }
-    if (!values.password) {
-      errors.password = "password is require";
-    }
-    if (!values.mobile.length) {
+    
+    if (!values.mobile) {
       errors.mobile = "Mobile no required";
     }
-    if (!values.state) {
-      errors.state = "State is required";
+    if (values.mobile.length > 10) {
+      errors.mobile = "Mobile no must be less than 11 ";
     }
-    if (!values.city) {
-      errors.city = "city no required";
+    if (values.mobile< 0) {
+      errors.mobile = "Mobile no must be greater than 0 ";
     }
     if (!values.email.includes("@gmail.com")) {
-      errors.email = "email must be content @gmail.com ";
+      errors.email = "Please enter valid email";
     }
+    // if (!values.state) {
+    //   errors.state = "State is required";
+    // }
+    // if (!values.city) {
+    //   errors.city = "city no required";
+    // }
+    // if (!values.password) {
+    //   errors.password = "password is require";
+    // }
+    
 
     return errors;
   };
 
-  console.log(formErrors);
-
-
 
   return (
-    <Box border={1}>
-      <Card sx={{ minWidth: 1200, maxWidth: 700, margin: "0 auto" }}>
+    <Box border={1} margin={"0px 230px"}>
+      <Card sx={{ minWidth: 800, maxWidth: 700, margin: "0 auto" }}>
         <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-          AllEmployeData Details
+          Employee Details
         </Typography>
 
         <CardContent>
@@ -145,7 +152,7 @@ const [states, setStates] = useState([]);
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12}>
                 <TextField
-                  error={false}
+                  error={formErrors.name}
                   type="text"
                   id="outlined-error"
                   label="Name"
@@ -155,13 +162,12 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, name: e.target.value })
                   }
                   fullWidth
-                  required
                   helperText={formErrors.name}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
-                  error={false}
+                  error={formErrors.email}
                   type="email"
                   id="outlined-error"
                   label="Email"
@@ -171,13 +177,12 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, email: e.target.value })
                   }
                   fullWidth
-                  required
                   helperText={formErrors.email}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
-                  error={false}
+                  error={formErrors.mobile}
                   type="number"
                   id="outlined-error"
                   label="Mobile"
@@ -187,8 +192,7 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, mobile: e.target.value })
                   }
                   fullWidth
-                  required
-                  helperText={formErrors.email}
+                  helperText={formErrors.mobile}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -205,12 +209,12 @@ const [states, setStates] = useState([]);
                   fullWidth
                   minRows={2}
                   maxRows={4}
-                  required
                 />
               </Grid>
 
               <Grid item xs={12} sm={12}>
                 <Autocomplete
+                  error={formErrors.state}
                   disablePortal
                   id="combo-box-demo"
                   options={states.map((states) => ({
@@ -223,7 +227,7 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, state: val.state_name })
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label="State" required />
+                    <TextField {...params} label="State" />
                   )}
                   helperText={formErrors.state}
                 />
@@ -243,13 +247,13 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, city: val.city_name })
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label="City" required />
+                    <TextField {...params} label="City" />
                   )}
-                  
+                  helperText={formErrors.city}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <TextField
+                {/* <TextField
                   id="date"
                   label="Date of Birth"
                   type="date"
@@ -262,9 +266,25 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, DOB: e.target.value })
                   }
                   fullWidth
-                  required
-                   helperText={formErrors.name}
-                />
+                  
+                /> */}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    disableFuture
+                    label="Date Of Birth"
+                    openTo="year"
+                    views={["year", "month", "day"]}
+                    value={AllEmployeData.DOB}
+                    onChange={(newValue) => {
+                      setEmployee({ ...AllEmployeData, DOB: newValue });
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                    // helperText={formErrors.date}
+                    fullWidth
+                  />
+
+                  <p> {formErrors.DOB}</p>
+                </LocalizationProvider>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <FormControl>
@@ -310,7 +330,7 @@ const [states, setStates] = useState([]);
                     setEmployee({ ...AllEmployeData, password: e.target.value })
                   }
                   fullWidth
-                  required
+                  helperText={formErrors.password}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
