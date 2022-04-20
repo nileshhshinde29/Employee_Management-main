@@ -61,36 +61,24 @@ const [states, setStates] = useState([]);
     setCities(res.data)
   }
 
-  // const handleChange = (e) => {
-  //   console.log(e.target.value)
-  // }
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   let arr = localStorage.getItem('empList') ? JSON.parse(localStorage.getItem('empList')) : []
-   
-  //   arr = arr.map((emp ,i)=> i === location.state.index ? AllEmployeData : emp)
-  //   localStorage.setItem('empList', JSON.stringify(arr))
-  //   navigate('/')
-
-  // }
+ 
   const myObj = AllEmployeData; // data is our object of values that we want to validate
-  const [formValues, setFormValues] = React.useState(myObj);
+  const [formValues, setFormValues] = React.useState(AllEmployeData);
   const [formErrors, setformErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
 
   useEffect(() => {
-    setFormValues(myObj);
+    setFormValues(AllEmployeData);
   }, [AllEmployeData]);
 
   useEffect(() => {
-    if (Object.keys(formErrors).length == 0 && isSubmit) {
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
       let arr = localStorage.getItem("empList")
         ? JSON.parse(localStorage.getItem("empList"))
         : [];
 
       arr = arr.map((emp, i) =>
-        i === location.state.index ? AllEmployeData : emp
+        i === location.state.index ? formValues : emp
       );
       localStorage.setItem("empList", JSON.stringify(arr));
        setIsSubmit(false);

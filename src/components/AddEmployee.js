@@ -78,8 +78,8 @@ function AddEmployee() {
     setCities(res.data)
   }
 
-  const handleChange = (e) => {
-  }
+  // const handleChange = (e) => {
+  // }
 
   // const handleSubmit = (e) => {
   //   e.preventDefault();
@@ -92,22 +92,21 @@ function AddEmployee() {
   // }
 
   const myObj = AllEmployeData  // data is our object of values that we want to validate
-const [formValues, setFormValues] = React.useState(myObj);
+const [formValues, setFormValues] = React.useState(AllEmployeData);
 const [formErrors, setformErrors] = useState({});
 const [isSubmit, setIsSubmit] = useState(false);
 
 useEffect(() => {
-  setFormValues(myObj);
+  setFormValues(AllEmployeData);
   // console.log(myObj)
 }, [AllEmployeData]);
 
 useEffect(() => {
-  if (Object.keys(formErrors).length == 0 && isSubmit) {
-    //  e.preventDefault();
+  if (Object.keys(formErrors).length ===0 && isSubmit) {
      let arr = localStorage.getItem("empList")
        ? JSON.parse(localStorage.getItem("empList"))
        : [];
-     arr.push(AllEmployeData);
+     arr.push(formValues);
      localStorage.setItem("empList", JSON.stringify(arr));
     //  setIsSubmit(false); 
     navigate("/");
